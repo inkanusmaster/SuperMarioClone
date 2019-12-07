@@ -11,7 +11,12 @@ public class MarioClone extends ApplicationAdapter {
     private Texture background; // texture dodaje generalnie obrazek do naszej apki
     private Texture[] man; // tablica textur będzie zawierać png'i biegającego ziomka
     private int manState = 0;
-    int pause = 0; // ziomek strasznie zapierdala. Trzeba go spowolnić
+    private int pause = 0; // ziomek strasznie zapierdala. Trzeba go spowolnić
+    private final float gravity = 1.2f; // robimy fizykę do skakania. Tutaj jakaś wartość gravity
+    private float velocity = 0; // robimy fizykę. tutaj prędkość czegoś
+    private int manY = 0; // pozycja ziomka. On będzie skakał - więc zmienna Y
+    private boolean canJump; // żeby nie dało się skskać w locie, tylko jak ziomek opadnie na podłogę
+
 
     @Override
     public void create() { // create jest gdy otwierasz grę pierwszy raz
@@ -22,6 +27,7 @@ public class MarioClone extends ApplicationAdapter {
         man[1] = new Texture("frame-2.png");
         man[2] = new Texture("frame-3.png");
         man[3] = new Texture("frame-4.png");
+        manY = Gdx.graphics.getHeight() / 2; // ustawiamy ziomka na środku ekranu (wysokość)
     }
 
     @Override
@@ -29,7 +35,12 @@ public class MarioClone extends ApplicationAdapter {
         batch.begin();
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // rysujemy: co, pozycja startowa, pozycja koncowa
 
-        if (pause < 6) { // spowalnia ziomka. co 8 pętli renderuje się obrazek.
+        if (Gdx.input.justTouched() && canJump) { // skakanie tutaj zaimplementowane. Na dotyk ekranu będzie.
+            velocity = -35; // podbijamy ziomka do góry. Z każdą iteracją będzie leciał do góry, a potem spadał zgodnie z tym co jest w sekcji "nakurwiamy fizykę"
+            canJump = false;
+        }
+
+        if (pause < 6) { // spowalnia ziomka. co 8 pętli renderuje się obrazek z biegnącym ziomkiem.
             pause++;
         } else {
             pause = 0;
@@ -39,8 +50,15 @@ public class MarioClone extends ApplicationAdapter {
                 manState = 0;
             }
         }
+        // nakurwiamy fizykę
+        velocity += gravity; // prędkość to prędkość plus grawitacja
+        manY -= velocity; // opada ziomek
 
-        batch.draw(man[manState], Gdx.graphics.getWidth() / 2 - man[manState].getWidth() / 2, Gdx.graphics.getHeight() / 2); // ustawiamy ziomka na środku ekranu i ruszamy go
+        if (manY <= 0) {  // robimy if żeby jak ziomek wyląduje na ziemi, nie spadał pod nią (manY spada cały czas więc dlatego warunek <=)
+            manY = 0;
+            canJump = true;
+        }
+        batch.draw(man[manState], Gdx.graphics.getWidth() / 2 - man[manState].getWidth() / 2, manY); // ustawiamy ziomka na środku ekranu, pozycja manY i ruszamy go.
         batch.end();
     }
 
