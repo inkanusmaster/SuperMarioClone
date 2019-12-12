@@ -81,14 +81,14 @@ public class MarioClone extends ApplicationAdapter {
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // rysujemy: co, pozycja startowa, pozycja koncowa
 
         if (gameState == 1) { // sprawdzamy gamestate. Jeśli 1 to gra działa
-            if (coinCount < 120) { // co 120 pętli zrób coina (tzn dodaje koordynaty do arraya)
+            if (coinCount < 100) { // co 120 pętli zrób coina (tzn dodaje koordynaty do arraya)
                 coinCount++;
             } else {
                 coinCount = 0;
                 makeCoin();
             }
 
-            if (bombCount < 150) { // co 150 pętli zrób bomb (tzn dodaje koordynaty do arraya)
+            if (bombCount < 135) { // co 150 pętli zrób bomb (tzn dodaje koordynaty do arraya)
                 bombCount++;
             } else {
                 bombCount = 0;
